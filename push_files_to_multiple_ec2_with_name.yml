@@ -1,0 +1,18 @@
+- hosts: tag_Name_<ec2name>
+  gather_facts: true
+  #become: true
+
+  tasks:
+    - name: "pushing file to host machines orbit-be-asg"
+      synchronize:
+        src: /tmp/orbit_asg_tmp/
+        dest: /home/ubuntu/b_test/
+        mode: push
+
+    - name: "Excute commands"
+      remote_user: ubuntu
+      shell: |
+       cp orbit/.env b_test/
+       cd b_test
+       pm2 delete prod
+       pm2 start app.js --name 'prod'
